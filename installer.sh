@@ -38,6 +38,11 @@ echo -e "\e[1;31m\e[1;1m\nLoading..."
 sleep 7
 clear
 
+if [[ $(cat /etc/os-release | head -n 1 | sed 's/\"//g' | cut -d "=" -f 2) != "Debian GNU/Linux 11 (bullseye)" ]]; then
+    echo -e "\nThis installer is for Debian 11 only. Exiting the installer...\n"
+    exit 1
+fi
+
 mkdir libraries 2>/dev/null
 mkdir config 2>/dev/null
 mkdir programs 2>/dev/null
@@ -52,19 +57,67 @@ echo -e "\e[1;32m\nSearching programs to download...\n"
 sleep 3
 
 cd config/
-wget https://dev.mysql.com/get/mysql-apt-config_0.8.20-1_all.deb
+echo -e "\e[1;35m\n- Downloading MySql Preconfiguration"
+if [[ -f mysql-apt-config_0.8.20-1_all.deb ]]; then
+    echo -e "\nThe File \"mysql-apt-config_0.8.20-1_all.deb\" is already downloaded"
+    sleep 1
+else
+    wget https://dev.mysql.com/get/mysql-apt-config_0.8.20-1_all.deb
+fi
 cd ../libraries/
-wget http://archive.ubuntu.com/ubuntu/pool/universe/p/proj/libproj15_6.3.1-1_amd64.deb
-wget http://mirrors.kernel.org/ubuntu/pool/universe/libz/libzip/libzip5_1.5.1-0ubuntu1_amd64.deb
-wget http://mirrors.kernel.org/ubuntu/pool/main/g/glibc/libc6_2.31-0ubuntu9_amd64.deb
-wget http://security.ubuntu.com/ubuntu/pool/main/m/mpdecimal/libmpdec2_2.4.2-3_amd64.deb
-wget http://security.ubuntu.com/ubuntu/pool/main/p/python3.8/libpython3.8-minimal_3.8.10-0ubuntu1~20.04.1_amd64.deb
-wget http://security.ubuntu.com/ubuntu/pool/main/p/python3.8/libpython3.8-stdlib_3.8.10-0ubuntu1~20.04.1_amd64.deb
-wget http://security.ubuntu.com/ubuntu/pool/main/p/python3.8/libpython3.8_3.8.10-0ubuntu1~20.04.1_amd64.deb
-cd ../programs/
-wget https://dev.mysql.com/get/Downloads/MySQLGUITools/mysql-workbench-community_8.0.27-1ubuntu20.04_amd64.deb
+echo -e "\e[1;32m\n- Downloading Libraries"
+if [[ -f libproj15_6.3.1-1_amd64.deb ]]; then
+    echo -e "\nThe File \"libproj15_6.3.1-1_amd64.deb\" is already downloaded"
+    sleep 1
+else
+    wget http://archive.ubuntu.com/ubuntu/pool/universe/p/proj/libproj15_6.3.1-1_amd64.deb
+fi
 
-echo -e "\e[1;33m\nLoading..."
+if [[ -f libzip5_1.5.1-0ubuntu1_amd64.deb ]]; then
+    echo -e "\nThe File \"libzip5_1.5.1-0ubuntu1_amd64.deb\" is already downloaded"
+    sleep 1
+else
+    wget http://mirrors.kernel.org/ubuntu/pool/universe/libz/libzip/libzip5_1.5.1-0ubuntu1_amd64.deb
+fi
+
+if [[ -f libmpdec2_2.4.2-3_amd64.deb ]]; then
+    echo -e "\nThe File \"libmpdec2_2.4.2-3_amd64.deb\" is already downloaded"
+    sleep 1
+else
+    wget http://security.ubuntu.com/ubuntu/pool/main/m/mpdecimal/libmpdec2_2.4.2-3_amd64.deb
+fi
+
+if [[ -f libpython3.8-minimal_3.8.10-0ubuntu1~20.04.1_amd64.deb ]]; then
+    echo -e "\nThe File \"libpython3.8-minimal_3.8.10-0ubuntu1~20.04.1_amd64.deb\" is already downloaded"
+    sleep 1
+else
+    wget http://security.ubuntu.com/ubuntu/pool/main/p/python3.8/libpython3.8-minimal_3.8.10-0ubuntu1~20.04.1_amd64.deb
+fi
+
+if [[ -f libpython3.8-stdlib_3.8.10-0ubuntu1~20.04.1_amd64.deb ]]; then
+    echo -e "\nThe File \"libpython3.8-stdlib_3.8.10-0ubuntu1~20.04.1_amd64.deb\" is already downloaded"
+    sleep 1
+else
+    wget http://security.ubuntu.com/ubuntu/pool/main/p/python3.8/libpython3.8-stdlib_3.8.10-0ubuntu1~20.04.1_amd64.deb
+fi
+
+if [[ -f libpython3.8_3.8.10-0ubuntu1~20.04.1_amd64.deb ]]; then
+    echo -e "\nThe File \"libpython3.8_3.8.10-0ubuntu1~20.04.1_amd64.deb\" is already downloaded"
+    sleep 1
+else
+    wget http://security.ubuntu.com/ubuntu/pool/main/p/python3.8/libpython3.8_3.8.10-0ubuntu1~20.04.1_amd64.deb
+fi
+
+cd ../programs/
+echo -e "\e[1;33m\n- Installing MySql Workbench"
+if [[ -f mysql-workbench-community_8.0.27-1ubuntu20.04_amd64.deb ]]; then
+    echo -e "\nThe File \"mysql-workbench-community_8.0.27-1ubuntu20.04_amd64.deb\" is already downloaded"
+    sleep 1
+else
+    wget https://dev.mysql.com/get/Downloads/MySQLGUITools/mysql-workbench-community_8.0.27-1ubuntu20.04_amd64.deb
+fi
+
+echo -e "\e[1;31m\nLoading..."
 sleep 3
 clear
 
@@ -83,11 +136,10 @@ echo -e "\e[1;31m\n- Installing MySql-Server"
 sudo apt install -y mysql-server
 cd ../libraries/
 echo -e "\e[1;32m\n- Installing Required Libraries"
-sudo apt install -y ./libproj15_6.3.1-1_amd64.deb ./libzip5_1.5.1-0ubuntu1_amd64.deb ./libc6_2.31-0ubuntu9_amd64.deb ./libmpdec2_2.4.2-3_amd64.deb ./libpython3.8-minimal_3.8.10-0ubuntu1~20.04.1_amd64.deb ./libpython3.8-stdlib_3.8.10-0ubuntu1~20.04.1_amd64.deb ./libpython3.8_3.8.10-0ubuntu1~20.04.1_amd64.deb
+sudo apt install -y ./libproj15_6.3.1-1_amd64.deb ./libzip5_1.5.1-0ubuntu1_amd64.deb ./libmpdec2_2.4.2-3_amd64.deb ./libpython3.8-minimal_3.8.10-0ubuntu1~20.04.1_amd64.deb ./libpython3.8-stdlib_3.8.10-0ubuntu1~20.04.1_amd64.deb ./libpython3.8_3.8.10-0ubuntu1~20.04.1_amd64.deb
 echo -e "\e[1;33m\n- Installing MySql Workbench"
 cd ../programs/
 sudo apt install -y ./mysql-workbench-community_8.0.27-1ubuntu20.04_amd64.deb
 echo -e "\e[1;34m\n- Installing Keyrings"
 sudo apt install -y gnome-keyring
-echo -e "\e[1;35m\nThe installation has been completed successfully :D"
-sleep 3
+echo -e "\e[1;32m\nThe installation has been completed successfully :D"
